@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { Spectator, createComponentFactory } from '@ngneat/spectator';
+import { FormsModule } from '@angular/forms';
+import { PasswordDisplayComponent } from './components/password-display.component';
+import { PasswordControlsComponent } from './components/password-controls.component';
+import { PasswordSettingsComponent } from './components/password-settings.component';
 
 describe('AppComponent (avec spectator)', () => {
   let spectator: Spectator<AppComponent>;
@@ -8,7 +12,13 @@ describe('AppComponent (avec spectator)', () => {
 
   const createComponent = createComponentFactory({
     component: AppComponent,
-    declarations: [AppComponent],
+    declarations: [
+      AppComponent,
+      PasswordDisplayComponent,
+      PasswordControlsComponent,
+      PasswordSettingsComponent,
+    ],
+    imports: [FormsModule],
   });
 
   beforeEach(() => {
@@ -29,17 +39,16 @@ describe('AppComponent (avec spectator)', () => {
 
   it('should update settings when user clicks on checkboxes', () => {
     spectator.click('#uppercase');
-    expect(component.uppercase).toBeTrue();
-    
+    expect(component.settings.uppercase).toBeTrue();
 
     spectator.click('#numbers');
-    expect(component.numbers).toBeTrue();
+    expect(component.settings.numbers).toBeTrue();
 
     spectator.click('#symbols');
-    expect(component.symbols).toBeTrue();
+    expect(component.settings.symbols).toBeTrue();
 
-    spectator.typeInElement("33", '#length');
-    expect(component.length).toBe(33);
+    spectator.typeInElement('33', '#length');
+    expect(component.settings.length).toBe(33);
   });
 });
 
@@ -48,7 +57,13 @@ describe('AppComponent (avec TestBed)', () => {
   let component: AppComponent;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AppComponent],
+      declarations: [
+        AppComponent,
+        PasswordDisplayComponent,
+        PasswordControlsComponent,
+        PasswordSettingsComponent,
+      ],
+      imports: [FormsModule],
     });
     fixture = TestBed.createComponent(AppComponent);
     fixture.autoDetectChanges();
@@ -63,24 +78,24 @@ describe('AppComponent (avec TestBed)', () => {
   it('should change message when user clicks generate button', () => {
     const button = fixture.nativeElement.querySelector('button');
     button.click();
-
+    fixture.detectChanges();
     const article = fixture.nativeElement.querySelector('article');
     expect(article.textContent).toBe('MON_MOT_DE_PASSE');
   });
 
   it('should update settings when user clicks on checkboxes', () => {
     fixture.nativeElement.querySelector('#uppercase').click();
-    expect(component.uppercase).toBeTrue();
+    expect(component.settings.uppercase).toBeTrue();
 
     fixture.nativeElement.querySelector('#numbers').click();
-    expect(component.numbers).toBeTrue();
+    expect(component.settings.numbers).toBeTrue();
 
     fixture.nativeElement.querySelector('#symbols').click();
-    expect(component.symbols).toBeTrue();
+    expect(component.settings.symbols).toBeTrue();
 
     const length = fixture.nativeElement.querySelector('#length');
     length.value = 33;
     length.dispatchEvent(new Event('input'));
-    expect(component.length).toBe(33);
+    expect(component.settings.length).toBe(33);
   });
 });
